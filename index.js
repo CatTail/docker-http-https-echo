@@ -1,16 +1,13 @@
-var express = require('express')
-const morgan = require('morgan');
-var http = require('http')
-var https = require('https')
-var app = express()
+const express = require('express')
+const http = require('http')
+const https = require('https')
+const app = express()
 const os = require('os');
 const jwt = require('jsonwebtoken');
-var concat = require('concat-stream');
+const concat = require('concat-stream');
 
 app.set('json spaces', 2);
 app.set('trust proxy', ['loopback', 'linklocal', 'uniquelocal']);
-
-app.use(morgan('combined'));
 
 app.use(function(req, res, next){
   req.pipe(concat(function(data){
@@ -51,8 +48,7 @@ app.all('*', (req, res) => {
     }
   }
   res.json(echo);
-  console.log('-----------------')
-  console.log(echo);
+  console.log(JSON.stringify(echo));
 });
 
 const sslOpts = {
@@ -60,8 +56,8 @@ const sslOpts = {
   cert: require('fs').readFileSync('fullchain.pem'),
 };
 
-var httpServer = http.createServer(app).listen(process.env.HTTP_PORT || 80);
-var httpsServer = https.createServer(sslOpts,app).listen(process.env.HTTPS_PORT || 443);
+const httpServer = http.createServer(app).listen(process.env.HTTP_PORT || 80);
+const httpsServer = https.createServer(sslOpts,app).listen(process.env.HTTPS_PORT || 443);
 
 let calledClose = false;
 
